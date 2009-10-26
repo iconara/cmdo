@@ -79,8 +79,8 @@ package cmdo {
 		 * the group. When the context is closed it's put in the undo history of
 		 * the context that was previously opened. While the context is open
 		 * undo and redo work just as normal, any undoables added can be undone
-		 * simply by calling #undo -- but if you undo past where the context was
-		 * started the context will be exited.
+		 * simply by calling #undo -- but you can't undo past the point where
+		 * the context was started.
 		 * 
 		 * Undo contexts are useful for certain situations. Say that you have a
 		 * complex dialog where you want all changes to be individually undoable
@@ -104,7 +104,7 @@ package cmdo {
 		public function exitContext( ) : void {
 			var previousContext : UndoContext = currentContext;
 			
-			if ( contexts.length > 1 ) {
+			if ( contexts.length > 0 ) {
 				previousContext.clearRedoHistory();
 				
 				currentContext = contexts.pop();
@@ -121,9 +121,13 @@ package cmdo {
 		 * will be discarded.
 		 */
 		public function discardContext( ) : void {
-			currentContext = contexts.pop();
+			if ( contexts.length > 0 ) {
+				currentContext = contexts.pop();
 			
-			dispatchUndoChanged();
+				dispatchUndoChanged();
+			} else {
+				throw new ArgumentError("Cannot discard root context");
+			}
 		}
 		
 		/**
@@ -138,11 +142,6 @@ package cmdo {
 				currentContext.undoOnce();
 			
 				dispatchUndoChanged();
-			} else if ( contexts.length > 1 ) {
-				exitContext();
-				
-				undo();
-				undo();
 			}
 		}
 		

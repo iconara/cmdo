@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<Application xmlns="http://www.adobe.com/2006/mxml" xmlns:funit="http://www.funit.org/2007/mxml">
+
+	<horizontalAlign>center</horizontalAlign>
+	<verticalAlign>middle</verticalAlign>
+	<applicationComplete>run()</applicationComplete>
+	
+	<Script>
+	<![CDATA[
+	
+	import funit.listeners.automation.DebugTestListener;
+	
+	import funit.core.TestSuite;
+	import funit.core.TestRunner;
+	
+	import cmdo.TestUndoManager;
+	
+
+	private function run( ) : void {
+		var tests : TestSuite = new TestSuite();
+		
+		tests.add(TestUndoManager);
+		
+		runner.test = tests;
+		
+		runner.run(new DebugTestListener());
+	}
+	
+	]]>
+	</Script>
+	
+	<funit:SimpleTestRunner id="runner"/>
+	
+</Application>
